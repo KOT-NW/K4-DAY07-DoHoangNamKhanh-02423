@@ -1,0 +1,9 @@
+doc_id,file_path,title,source_url,retrieved_at,document_version,license_or_permission
+dormitory-fees,data/university/dormitory-fees.md,Phi ky tuc xa VinUni,https://policy.vinuni.edu.vn/all-policies/financial-regulations-and-tariff-for-student-2/,2026-09-19,2025-04-25,public-source
+library-borrow-faculty,data/university/library-borrow-faculty.md,Muon sach thu vien cho hoc vien cao hoc va giang vien,https://library.vinuni.edu.vn/services/borrow-and-request/graduate-faculty-and-instructors/,2026-09-19,not-stated,public-source
+library-borrow-student,data/university/library-borrow-student.md,Muon sach thu vien cho sinh vien dai hoc,https://library.vinuni.edu.vn/services/borrow-and-request/undergraduate-and-staff/,2026-09-19,not-stated,public-source
+library-policy-access,data/university/library-policy-access.md,Noi quy ra vao va su dung thu vien VinUni,https://policy.vinuni.edu.vn/all-policies/library-policies-for-users/,2026-09-19,2025-07-09,public-source
+scholarship-maintain,data/university/scholarship-maintain.md,Dieu kien duy tri hoc bong va ho tro tai chinh VinUni,https://policy.vinuni.edu.vn/all-policies/criteria-to-maintain-the-entry-scholarship-and-financial-aid-support/,2026-09-19,2024-11-21,public-source
+tuition-fees-2026,data/university/tuition-fees-2026.md,Hoc phi dai hoc VinUni nam 2026-2027,https://admissions.vinuni.edu.vn/tuition-fee/undergraduate/,2026-09-19,2026-07-01,public-source
+hust-ktx-gioi-thieu,data/university/hust-ktx-gioi-thieu.md,KTX Dai hoc Bach khoa Ha Noi,https://hust.edu.vn/vi/sinh-vien/sinh-vien-hien-tai/ky-tuc-xa-51010.html,2026-09-19,2016-07-11,public-source
+neu-ktx-1001,data/university/neu-ktx-1001.md,KTX Dai hoc Kinh te Quoc dan gia phi va noi quy,https://fbm.neu.edu.vn/1001-su-that-ve-ki-tuc-xa-truong-dai-hoc-kinh-te-quoc-dan/,2026-09-19,2021-08-05,public-source
