@@ -1,10 +1,10 @@
 # Báo Cáo Nhóm — Lab 7: Embedding & Vector Store
 
-**Nhóm:** K4-L3A (1 thành viên)
-**Thành viên:** Đỗ Hoàng Nam Khánh — 02423
-**Ngày:** 2026-09-19
+**Nhóm:** C Sủi
+**Thành viên:** Nguyễn Anh Trí, Phạm Minh Cương (cùng corpus chủ đề KTX; số liệu tham chiếu chéo từ repo Võ Đức Trí, Trần Cao Thắng, Đỗ Hoàng Nam Khánh — mỗi repo một corpus, ghi rõ nguồn)
+**Ngày:** 19/09/2026
 
-> Nộp 1 bản / nhóm. Chi tiết thang điểm: `docs/SCORING.md`.
+> **Nộp 1 bản / nhóm.** Phần cá nhân mỗi thành viên nộp riêng trong `REPORT_CANHAN.md`. Chi tiết thang điểm: `docs/SCORING.md`.
 
 **Tổng điểm phần nhóm: 40** = Lựa chọn tài liệu (10) + Thiết kế chiến lược (15) + Chất lượng truy xuất (10) + Thuyết trình (5).
 
@@ -14,25 +14,29 @@
 
 ### Chủ đề (Domain) & Lý Do Chọn
 
-**Chủ đề:** Dịch vụ / quy định đại học: thư viện, học phí, học bổng, ký túc xá (đúng ràng buộc K4-L3A).
+**Chủ đề:** Ký túc xá — dịch vụ và quy định đại học (ĐHQG-HCM, Bách Khoa Hà Nội).
 
 **Tại sao nhóm chọn chủ đề này?**
-Chủ đề này có văn bản quy định biên soạn theo mục rõ ràng (phù hợp thử chunking theo heading), số liệu cụ thể để làm gold answer (số cuốn, số tháng, VND, GPA, giờ giấc), và có cặp tài liệu cùng từ vựng nhưng khác đối tượng (SV vs GV) để chứng minh giá trị của metadata filter. Nguồn toàn trang công khai của các trường (VinUni, HUST, NEU), đã làm sạch menu/footer.
+> KTX là mảng dịch vụ đại học có văn bản quy định rõ theo mục (phí, giờ giấc, thủ tục, kỷ luật) — lý tưởng để so sánh chunking theo section với chunking cố định. Cùng một câu hỏi ("mấy giờ đóng cổng?") có đáp án khác nhau theo trường và theo đối tượng, tạo điều kiện thật cho metadata filter — đúng ràng buộc K4-L3A.
 
 ### Danh sách tài liệu (Data Inventory)
 
-| # | Tên tài liệu | Nguồn (Source URL) | Ngày lấy / Phiên bản | Số ký tự | Metadata đã gán |
-|---|--------------|--------------------|----------------------|----------|-----------------|
-| 1 | library-borrow-student | https://library.vinuni.edu.vn/services/borrow-and-request/undergraduate-and-staff/ | 2026-09-19 / not-stated | 1296 | audience=student, department=library, category=borrowing, language=vi |
-| 2 | library-borrow-faculty | https://library.vinuni.edu.vn/services/borrow-and-request/graduate-faculty-and-instructors/ | 2026-09-19 / not-stated | 1379 | audience=faculty, department=library, category=borrowing, language=vi |
-| 3 | library-policy-access | https://policy.vinuni.edu.vn/all-policies/library-policies-for-users/ | 2026-09-19 / 2025-07-09 | 1923 | audience=all, department=library, category=policy, language=vi |
-| 4 | tuition-fees-2026 | https://admissions.vinuni.edu.vn/tuition-fee/undergraduate/ | 2026-09-19 / 2026-07-01 | 1294 | audience=all, department=finance, category=tuition, language=vi |
-| 5 | scholarship-maintain | https://policy.vinuni.edu.vn/all-policies/criteria-to-maintain-the-entry-scholarship-and-financial-aid-support/ | 2026-09-19 / 2024-11-21 | 1457 | audience=student, department=student-affairs, category=scholarship, language=vi |
-| 6 | dormitory-fees | https://policy.vinuni.edu.vn/all-policies/financial-regulations-and-tariff-for-student-2/ | 2026-09-19 / 2025-04-25 | 1446 | audience=student, department=student-affairs, category=housing, language=vi |
-| 7 | hust-ktx-gioi-thieu | https://hust.edu.vn/vi/sinh-vien/sinh-vien-hien-tai/ky-tuc-xa-51010.html | 2026-09-19 / 2016-07-11 | 1446 | audience=student, department=student-affairs, category=housing, language=vi |
-| 8 | neu-ktx-1001 | https://fbm.neu.edu.vn/1001-su-that-ve-ki-tuc-xa-truong-dai-hoc-kinh-te-quoc-dan/ | 2026-09-19 / 2021-08-05 | 1660 | audience=student, department=student-affairs, category=housing, language=vi |
+Corpus `data/ky-tuc-xa/` (Trí): 6 tài liệu nền + 4 tài liệu stress-test tổng hợp (ghi rõ license). Cương bổ sung nhánh UIT + Thư viện Trung tâm + KTX ĐHQG-HCM (7 docs, xem repo Cương).
 
-File `vnu.edu.vn` / `tuyensinh.vnu.edu.vn` bị loại: crawler từ chối vì không verify được `robots.txt` (lỗi SSL), đúng luật lab nên đổi sang HUST/NEU (robots cho phép, đã crawl thử thành công qua `scripts/fetch_public_pages.py`). File `policy.vinuni.edu.vn` cũng bị `disallowed by robots.txt` nên phần VinUni là chép tay phần công khai được phép dùng và đã làm sạch.
+| # | Tên tài liệu | Nguồn (Source URL) | Ngày lấy / Phiên bản | Số ký tự | Metadata đã gán |
+|---|--------------|------------|--------------------|----------|-----------------|
+| 1 | ktx-gioi-thieu-chung | https://ktx.vnuhcm.edu.vn | 2026-09-19 / not-stated | 1206 | audience=all, dept=student-services, category=overview, lang=vi |
+| 2 | ktx-dang-ky-phong-sinh-vien | https://sv.ktxhcm.edu.vn | 2026-09-19 / not-stated | 1242 | audience=student, category=registration, lang=vi |
+| 3 | ktx-muc-phi-sinh-vien | https://ktx.vnuhcm.edu.vn | 2026-09-19 / not-stated | 1014 | audience=student, dept=finance, category=fees, lang=vi |
+| 4 | ktx-noi-quy-sinh-vien | https://huongdan.ktxhcm.edu.vn | 2026-09-19 / not-stated | 1198 | audience=student, category=rules, lang=vi |
+| 5 | ktx-quy-dinh-can-bo-truc | https://ktx.vnuhcm.edu.vn | 2026-09-19 / not-stated | 1026 | audience=staff, dept=administration, category=rules, lang=vi |
+| 6 | ktx-thu-tuc-giay-to | https://huongdan.ktxhcm.edu.vn | 2026-09-19 / not-stated | 1199 | audience=student, category=procedure, lang=vi |
+| 7 | ktx-bieu-phi-cu-2023 (stress: biểu phí hết hiệu lực) | https://ktx.vnuhcm.edu.vn | 2026-09-19 / 2023-08-01 | 683 | audience=student, category=fees, synthetic-stress |
+| 8 | ktx-noi-quy-hust (stress: trường khác, 23:00 vs 22:30) | https://ktx.hust.edu.vn | 2026-09-19 / not-stated | 776 | audience=student, category=rules, synthetic-stress |
+| 9 | ktx-bang-tin-tho (stress: nhiễu menu/tin tức) | https://ktx.vnuhcm.edu.vn | 2026-09-19 / not-stated | 918 | audience=all, category=news, synthetic-stress |
+| 10 | ktx-guest-house-faculty (stress: tiếng Anh) | https://ktx.hust.edu.vn | 2026-09-19 / not-stated | 802 | audience=faculty, lang=en, synthetic-stress |
+
+**Trung thực crawl:** fetch trực tiếp 4 cổng KTX đều thất bại có ghi nhận (robots.txt treo, SSL invalid, trang render JS trả về rỗng) — đúng các failure mode codelab đã cảnh báo. 6 file nền được biên soạn từ cấu trúc công khai của các cổng (license `team-authored-from-public-portals`); 4 file stress ghi rõ `team-authored-synthetic-stress` để test giới hạn (version cũ, distractor liên trường, nhiễu, đa ngữ).
 
 **Danh sách kiểm tra quản trị dữ liệu (Data governance checklist):**
 - [x] Tập tài liệu (Corpus) chỉ chứa nguồn công khai/được phép dùng và không chứa dữ liệu cá nhân, thông tin đăng nhập hoặc tài liệu nội bộ.
@@ -41,14 +45,13 @@ File `vnu.edu.vn` / `tuyensinh.vnu.edu.vn` bị loại: crawler từ chối vì 
 ### Cấu trúc Metadata (Metadata Schema)
 
 | Trường metadata | Kiểu | Ví dụ giá trị | Tại sao hữu ích cho truy xuất (retrieval)? |
-|----------------|------|---------------|--------------------------------------------|
-| audience | enum | student / faculty / all | Tách SV vs GV cùng chủ đề mượn sách (3 cuốn/2 tuần vs 5 cuốn/6 tháng); Q1 bắt buộc filter mới đúng |
-| department | string | library / finance / student-affairs | Lọc theo đơn vị quản lý khi câu hỏi thuộc nghiệp vụ cụ thể |
-| category | string | borrowing / tuition / scholarship / housing / policy | Lọc theo loại quy định, tránh lẫn học phí với KTX |
-| language | string | vi | Sẵn sàng mở rộng corpus song ngữ |
-| source_url / retrieved_at / document_version | string/date | URL gốc, 2026-09-19, 2025-07-09… | Truy vết nguồn, kiểm tra độ mới; version `not-stated` khi nguồn không nêu, không bịa |
-
-Trang thư viện gộp hạn mức SV và GV nên đã tách thành 2 file riêng — nếu để chung 1 file `audience: all` thì filter không có gì để lọc.
+|----------------|------|---------------|-------------------------------|
+| audience | enum student/faculty/staff/all | student | Lọc theo đối tượng — Q1 bắt buộc (22:30 SV vs 24/24 cán bộ) |
+| department | string | student-services | Thu hẹp phạm vi nghiệp vụ (học vụ vs tài chính) |
+| category | string | fees/rules/procedure | Lọc theo loại câu hỏi (tra phí vs tra thủ tục) |
+| language | enum vi/en | en | Tách tài liệu tiếng Anh khỏi query tiếng Việt |
+| document_version | date/not-stated | 2023-08-01 | Phân biệt biểu phí hết hiệu lực với biểu hiện hành (Q6) |
+| source_url/retrieved_at | string/date | https://ktx.vnuhcm.edu.vn | Truy vết nguồn, kiểm độ mới |
 
 ---
 
@@ -56,50 +59,48 @@ Trang thư viện gộp hạn mức SV và GV nên đã tách thành 2 file riê
 
 ### Phân tích đường cơ sở (Baseline Analysis)
 
-Chạy `ChunkingStrategyComparator().compare()` (chunk_size=500):
+`ChunkingStrategyComparator().compare()` trên `ktx-noi-quy-sinh-vien.md` (chunk_size=500):
 
 | Tài liệu | Chiến lược (Strategy) | Số lượng Chunk | Độ dài trung bình | Giữ được ngữ cảnh không? |
-|-----------|----------------------|----------------|-------------------|--------------------------|
-| library-policy-access | FixedSizeChunker (`fixed_size`) | 4 | 446.0 | Trung bình — cắt cứng giữa câu |
-| library-policy-access | SentenceChunker (`by_sentences`) | 8 | 202.6 | Tốt ở cấp câu, nhưng vụn, mất cấu trúc mục |
-| library-policy-access | RecursiveChunker (`recursive`) | 4 | 407.0 | Khá — ưu tiên ranh giới lớn trước |
-| neu-ktx-1001 | FixedSizeChunker (`fixed_size`) | 3 | 483.0 | Trung bình |
-| neu-ktx-1001 | SentenceChunker (`by_sentences`) | 6 | 223.3 | Vụn, giá phòng bị tách khỏi loại phòng |
-| neu-ktx-1001 | RecursiveChunker (`recursive`) | 4 | 335.8 | Khá |
-
-Nhận xét: `by_sentences` sinh nhiều chunk nhất, ngắn nhất (~200-220 ký tự) — dễ mất ngữ cảnh mục; `fixed_size`/`recursive` ít chunk (3-4), dài (~330-480). Toàn corpus 8 file với HeadingChunker ra 43 chunks (~5.4/file).
+|-----------|----------|-------------|------------|-------------------|
+| ktx-noi-quy-sinh-vien | FixedSizeChunker (`fixed_size`) | 2 | 474.5 | Trung bình — có thể cắt giữa câu/điều khoản |
+| ktx-noi-quy-sinh-vien | SentenceChunker (`by_sentences`) | 4 | 235.0 | Tốt — mỗi chunk là câu hoàn chỉnh, nhưng mất cấu trúc mục |
+| ktx-noi-quy-sinh-vien | RecursiveChunker (`recursive`) | 2 | 469.0 | Tốt nhất baseline — giữ ranh giới mục/đoạn |
 
 ### Chiến lược của từng thành viên
 
-**Thành viên 1 — Đỗ Hoàng Nam Khánh (02423)**
-- **Loại chiến lược:** custom `HeadingChunker` (chunk theo heading/section, section dài hạ xuống Recursive, gắn lại tiêu đề vào mảnh con).
-- **Mô tả & lý do chọn cho chủ đề này:** Văn bản quy định được biên soạn theo mục (`## Gia han`, `## Gia phong`…), mỗi mục là đơn vị ngữ nghĩa trọn vẹn do người soạn chia sẵn. Tách trước mỗi dòng heading giữ được trọn ý của mục; gắn lại tiêu đề vào mảnh con tránh mất ngữ cảnh "đây là mục nói về cái gì".
+**Thành viên 1 — Nguyễn Anh Trí**
+- **Loại chiến lược:** RecursiveChunker (chunk_size=500) + sidecar Graph RAG (LLM triple extraction qua DeepSeek-compatible API, graph adjacency-list, cache `data/graph_triples.json`).
+- **Mô tả & lý do chọn cho chủ đề này:** Văn bản quy định KTX biên soạn theo mục (`##`) — recursive giữ ranh giới mục mà không vỡ vụn. Graph sidecar để kiểm chứng giả thuyết: quan hệ tường minh (phòng→phí, cổng→giờ→đối tượng) truy xuất tốt hơn similarity ở câu hỏi đa sự kiện.
+
+**Thành viên 2 — Phạm Minh Cương**
+- **Loại chiến lược:** HeadingChunker(300) — tách theo tiêu đề, gắn tiêu đề tài liệu + mục vào mọi mảnh con.
+- **Mô tả & lý do chọn:** Corpus quy định UIT/VNULIB/KTX có cấu trúc mục chặt; mỗi section là đơn vị ngữ nghĩa trọn vẹn do người soạn chia sẵn. Chạy trên 7 docs → 23 chunks, avg 221.1. Đáp ứng yêu cầu "ít nhất 1 thành viên chunk theo heading".
 - **Code snippet (nếu custom):**
 ```python
 class HeadingChunker:
-    def __init__(self, max_len: int = 600) -> None:
-        self.max_len = max_len
-        self._fallback = RecursiveChunker(chunk_size=max_len)
-
-    def chunk(self, text: str) -> list[str]:
-        # Tach truoc moi dong heading ##.., moi section 1 chunk;
-        # section dai hon max_len thi cat nho bang Recursive
-        # va gan lai tieu de vao tung manh con.
-        ...
+    """Tach theo tieu de Markdown, gan tieu de vao moi manh con."""
+    def __init__(self, max_len: int = 300): ...
+    def chunk(self, text: str) -> list[str]: ...
 ```
 
-*(Nhóm 1 người nên cột so sánh dưới dùng 3 baseline built-in làm đối chứng thay cho thành viên 2/3.)*
+**Tham chiếu chéo (repo bạn, corpus khác — không tính vào so sánh cùng-corpus):**
+- **Võ Đức Trí** — RecursiveChunker(500) trên corpus KTX riêng (7 docs: kỷ luật, PCCC, biểu phí...), mock embedder, tổng 3/10; Q5 dùng filter audience=student (100% kết quả đúng đối tượng).
+- **Trần Cao Thắng** — chunker built-in (FixedSize/Recursive) trên corpus học vụ (ĐKHP, học bổng, phúc khảo, thư viện), 4/5 câu có chunk liên quan top-3; Q3 cứu bằng filter audience=student.
+- **Đỗ Hoàng Nam Khánh** — HeadingChunker(max_len=600, chuyển đổi được fixed/recursive) trên corpus VinUni (8 files/43 chunks), mock: 1/5 ở mức keyword nhưng 3/5 ở mức doc_id.
 
 ### So Sánh Giữa Các Thành Viên
 
-| Chiến lược (Strategy) | Điểm truy xuất (/10) | Điểm mạnh | Điểm yếu |
-|-----------------------|----------------------|-----------|----------|
-| Heading (custom) | — (đo bằng mock nên chỉ so coherence) | Giữ trọn mục, chunk có tiêu đề, truy vết tốt | Mục quá dài vẫn phải cắt; mục ngắn gây chunk nhỏ |
-| FixedSize | — | Đơn giản, đều, có overlap | Cắt giữa câu/mục, lẫn số liệu |
-| Recursive | — | Ưu tiên ranh giới lớn, ít vụn | Vẫn có thể tách giá khỏi loại phòng nếu thiếu overlap |
+| Thành viên | Chiến lược (Strategy) | Điểm truy xuất (/10) | Điểm mạnh | Điểm yếu |
+|-----------|----------|----------------------|-----------|----------|
+| Anh Trí | RecursiveChunker + Graph sidecar (KTX, semantic) | 8/10 (Q1–Q5); graph 2/16 | Giữ cấu trúc mục; graph phơi bày xung đột liên văn bản | Distractor cùng chủ đề khác trường vẫn chen top-1 |
+| Minh Cương | HeadingChunker(300) (UIT/VNULIB/KTX) | 2/5 evidence top-3 | Section = đơn vị ngữ nghĩa trọn vẹn; có bằng chứng chunk-level | Mock embedder kéo top-1 sai 3/5 câu |
+| V. Đức Trí (tham chiếu) | RecursiveChunker(500) (KTX riêng, mock) | 3/10 | Filter audience chuẩn xác | Mock làm top-1 sai 4/5 câu |
+| C. Thắng (tham chiếu) | Built-in chunkers (học vụ, mock) | 4/5 top-3 | Pre-filter cứu Q3 | Q2/Q5 top-1 nhiễu mock |
+| N. Khánh (tham chiếu) | HeadingChunker(600) (VinUni, mock) | 1/5 keyword, 3/5 doc | Phát hiện "đúng doc ≠ đúng chunk" | Chấm doc-level thổi phồng kết quả |
 
 **Chiến lược nào tốt nhất cho chủ đề này? Tại sao?**
-Heading tốt nhất cho corpus quy định vì đơn vị ngữ nghĩa đã có sẵn trong cấu trúc mục của người soạn — chunk trùng với mục nên vừa mạch lạc vừa dễ truy vết về đúng điều khoản. FixedSize chỉ nên dùng khi văn bản không có cấu trúc.
+> Recursive/Heading thắng FixedSize trên văn bản quy định vì ranh giới mục do người soạn chia sẵn chính là ranh giới ngữ nghĩa — chunk trùng section giữ trọn điều khoản + số liệu đi cùng nhau. Nhưng chunking chỉ là một tầng: cả 5 repo đều cho thấy mock embedder phá hỏng top-1 bất kể chunker nào, và distractor liên trường (22:30 vs 23:00) chỉ giải được bằng metadata/audience hoặc quan hệ tường minh — không chunker nào tự giải được. Vì vậy "tốt nhất" = heading/recursive + filter + embedder ngữ nghĩa, không phải một chunker đơn lẻ.
 
 ---
 
@@ -107,49 +108,51 @@ Heading tốt nhất cho corpus quy định vì đơn vị ngữ nghĩa đã có
 
 ### Câu hỏi đánh giá & Câu trả lời chuẩn (nhóm thống nhất)
 
+Bộ 8 query `bench.py` (5 câu chung Q1–Q5 + 3 câu stress Q6–Q8):
+
 | # | Câu hỏi (Query) | Câu trả lời chuẩn (Gold Answer) | Chunk nào chứa thông tin? |
-|---|-----------------|--------------------------------|---------------------------|
-| 1 | Tôi là sinh viên, mượn sách thư viện được mấy cuốn, bao lâu, gia hạn thế nào? (cần `filter audience=student`) | SV: tối đa 3 cuốn, mỗi cuốn 2 tuần, gia hạn 1 lần thêm 1 tuần | `library-borrow-student` mục Gia han |
-| 2 | Giảng viên VinUni mượn sách được mấy cuốn và bao lâu? | GV: tối đa 5 cuốn, tối đa 6 tháng | `library-borrow-faculty` mục The muon |
-| 3 | Học phí 2026-2027 của Điều dưỡng và các ngành cử nhân khác, có trợ cấp gì? | Điều dưỡng 349.650.000/năm; các cử nhân khác 815.850.000/năm; trợ cấp 35% Vingroup | `tuition-fees-2026` mục Bieu phi + Tro cap |
-| 4 | Duy trì học bổng Full/100% cần GPA bao nhiêu, học bổng 50-90% cần bao nhiêu? | Full/100%: GPA năm từ 3.2; 50-90%: GPA năm từ 2.5; kèm E.X.C.E.L và kỷ luật tốt | `scholarship-maintain` mục Hoc bong Full / 50-90% |
-| 5 | KTX NEU phòng 4 người có điều hòa giá bao nhiêu, giờ giới nghiêm và đăng ký thế nào? | 1.500.000/người/tháng; giới nghiêm 23h (T7-CN 23h30); 2 ảnh 3x4 + cọc 5 tháng tại nhà 5 | `neu-ktx-1001` mục Gia phong / Gio giac / Dang ky |
+|---|-------|-------------------------------|--------------------------|
+| 1 | Cổng KTX đóng lúc mấy giờ? (filter audience=student) | 22 giờ 30 đối với sinh viên | ktx-noi-quy-sinh-vien#Gio-ra-vao-cong |
+| 2 | Phòng 4 SV giá bao nhiêu/tháng? | 450.000đ/sinh viên/tháng | ktx-muc-phi-sinh-vien#Bang-phi |
+| 3 | Hồ sơ nhận phòng gồm giấy tờ gì? | 4 loại: CCCD sao, giấy báo nhập học/thẻ SV, đơn theo mẫu, biên lai cọc 500k | ktx-thu-tuc-giay-to#Ho-so |
+| 4 | Quy trình đăng ký mấy bước, khi nào có kết quả? | 4 bước, kết quả trong 7 ngày làm việc | ktx-dang-ky-phong-sinh-vien#Quy-trinh |
+| 5 | Vi phạm lần 3 bị xử lý thế nào? | Chấm dứt hợp đồng ở KTX | ktx-noi-quy-sinh-vien#Xu-ly |
+| 6 | Phí phòng 8 SV hiện tại bao nhiêu? (stress version) | 250.000đ (biểu cũ 2023 nói 200.000đ) | ktx-muc-phi-sinh-vien (vs ktx-bieu-phi-cu-2023) |
+| 7 | SV Bách Khoa HN phải về trước mấy giờ? (stress liên trường) | 23 giờ | ktx-noi-quy-hust |
+| 8 | Giặt ủi khu B mở đến mấy giờ? (stress nhiễu) | 20 giờ | ktx-bang-tin-tho#Dich-vu |
 
 ### Tổng hợp chất lượng truy xuất của nhóm
 
-Chạy `bench.py` (HeadingChunker, mock embedder — không có ngữ nghĩa, số liệu bị chi phối bởi mock):
+Chấm content-level (snippet đáp án trong chunk, không chỉ doc_id):
 
 | # | Câu hỏi | Chiến lược tốt nhất cho câu này | Có chunk liên quan trong top-3? | Ghi chú |
-|---|---------|--------------------------------|---------------------------------|---------|
-| 1 | Mượn sách SV | heading + filter | Có (rank 3, chunk Gia han) với filter; không filter thì mất | A/B: có filter keyword-hit 1/3, không filter 0/3 |
-| 2 | Mượn sách GV | — (mock nhiễu) | Có doc đúng ở rank 3 nhưng sai section (Dat truoc thay vì The muon) | Đúng tài liệu ≠ đúng chunk chứa đáp án |
-| 3 | Học phí | — (mock nhiễu) | Có doc đúng ở rank 2 nhưng keyword-hit 0/3 | Chunk Bieu phi không lọt top-3 |
-| 4 | Học bổng | — (mock nhiễu) | Không — top-1 là dormitory-fees (score 0.374) | Failure case chính (xem dưới) |
-| 5 | KTX NEU | — (mock nhiễu) | Không — top-3 toàn tuition/library/scholarship | Mock đo ký tự, không đo nghĩa |
+|---|---------|-------------------------------|-------------------------------|---------|
+| 1 | Giờ đóng cổng | Recursive + filter (Trí, 1đ @2) | Có | Distractor HUST 23:00 chen top-1 cả vector lẫn graph |
+| 2 | Phí phòng 4 | Vector-semantic (2đ @1, 0.661) | Có | Graph cũng trả đúng triple nhưng đồng hạng với biểu cũ |
+| 3 | Hồ sơ nhận phòng | Vector-semantic (2đ @1) | Có | Graph-regex miss (entity linker không có node "hồ sơ") |
+| 4 | Quy trình đăng ký | Vector-semantic (2đ @1) | Có | Graph chỉ đúng doc, sai chunk |
+| 5 | Vi phạm lần 3 | Vector-semantic (1đ @2) | Có | Rule HUST ("tạm dừng 1 học kỳ") chen top-1 |
+| 6 | Phí phòng 8 hiện tại | Hòa (cả hai 1đ) | Có | **Cả hai đều xếp biểu cũ 2023 lên #1** — similarity không đọc version |
+| 7 | Giờ về HUST | Vector-semantic (2đ @1, 0.661) | Có | Graph miss (không có node "Bach Khoa Ha Noi") |
+| 8 | Giặt ủi khu B | Cả hai 2đ @1 | Có | Query trùng tên entity → graph hit; vector cũng hit |
 
 **Lọc bằng metadata có giúp ích không? Ở câu hỏi nào?**
-Có, ở Q1. Cùng câu hỏi mượn sách, corpus có 2 tài liệu cùng từ vựng nhưng khác đối tượng và khác đáp án (SV 3 cuốn/2 tuần vs GV 5 cuốn/6 tháng). Chạy không filter, top-3 không có chunk SV nào; chạy `filter audience=student`, chunk Gia han của SV lọt top-3. Đây là bằng chứng filter có việc thật — nhờ đã tách file theo audience từ đầu.
-
-### Phân tích lỗi (Failure Analysis)
-
-**Câu hỏi hỏng:** Q4 (GPA duy trì học bổng Full/100%).
-**Vì sao:** Top-1 là `dormitory-fees` (chunk Gia phong, score 0.374) dù hỏi về học bổng — cosine trên mock embedding đo độ giống ký tự/chủ đề chung ("sinh viên", số tiền VND), không đo mật độ thông tin trả lời được. Chunk đúng (`scholarship-maintain` mục Hoc bong Full) không lọt top-3. Đây cũng là minh họa cho chênh lệch 2 mức chấm: kể cả khi doc đúng lọt top-3 (như Q2/Q3), chunk lọt vào vẫn có thể là section sai.
-**Đề xuất:** bật embedder thật (local đa ngữ) để có ngữ nghĩa; thêm overlap để mỗi thông tin có >1 cơ hội lọt top-k; lọc `category=scholarship` khi câu hỏi đã rõ nghiệp vụ; chấm ở mức nội dung (keyword phải xuất hiện trong chunk) thay vì chỉ chấm doc_id.
+> Có, ở Q1 (Trí), Q3 (Thắng), Q5 (Đức Trí), Q1 (Cương): filter `audience=student` loại toàn bộ văn bản cán bộ/khách (cổng 24/24, phòng khách) khỏi top-k — A/B có/không filter cho top-3 khác nhau hoàn toàn. Nhưng filter không thay thế hiểu câu hỏi: Q1 vẫn lẫn HUST vs VNU (cùng audience), Q6 vẫn thua biểu cũ (cùng audience) — đó là giới hạn cần version-aware ranking hoặc quan hệ tường minh.
 
 ---
 
 ## 4. Thuyết trình (Demo) & Bài học nhóm — Nhóm (5 điểm)
 
 **Những phân tích (insights) hay nhất nhóm sẽ trình bày:**
-1. Tách file theo `audience` khiến metadata filter có việc thật — demo A/B Q1 có/không filter.
-2. Đúng tài liệu ≠ đúng chunk: Q2/Q3 lọt doc đúng nhưng sai section — phải chấm ở mức nội dung.
-3. Mock embedder phá hỏng mọi số liệu retrieval — phân tích chuyển sang count/avg_length/coherence khi buộc dùng mock.
+> 1. Cùng code, cùng corpus, chỉ đổi embedder: mock 0/10 → semantic 13/16 — embedder là biến số lớn nhất, không phải chunker.
+> 2. Chênh lệch chấm doc-level vs content-level (Khánh: 3/5 doc nhưng 1/5 keyword) — "đúng tài liệu ≠ trả lời được".
+> 3. Graph RAG với 125 triple LLM vẫn chỉ 2/16: extraction tốt không cứu được entity linking kém (hub node "Sinh vien" nuốt mọi query) — demo live bằng `compare.py` (query trên, Vector trái / Graph phải).
 
 **Bài học rút ra khi so sánh trong nhóm:**
-Cùng tài liệu nhưng chiến lược khác nhau cho số chunk và độ dài trung bình khác hẳn (by_sentences 6-8 chunk ngắn ~200 ký tự vs fixed/recursive 3-4 chunk dài ~400 ký tự) — chunk ngắn dễ mất ngữ cảnh mục, chunk dài dễ lẫn số liệu.
+> Cùng tài liệu, chiến lược khác nhau cho top-3 khác nhau rõ rệt: heading/recursive giữ đáp án nguyên vẹn trong một chunk (Q2–Q4 hit @1), fixed-size và mock-query để đáp án vỡ hoặc lẫn distractor. Nhưng khác corpus thì không so điểm thô được — nhóm chuẩn hoá bằng cách chấm content-level và báo cáo A/B filter thay vì khoe điểm tuyệt đối.
 
 **Nếu làm lại, nhóm sẽ thay đổi gì trong chiến lược dữ liệu (data strategy)?**
-Cài embedder thật (local) từ đầu buổi để tải nền; thêm overlap cho HeadingChunker ở các mục chứa số liệu; bổ sung thêm 1-2 file `audience=faculty/staff` để filter có nhiều việc hơn.
+> (1) Crawl sớm bằng máy cá nhân thay vì môi trường lab (4 cổng KTX chặn fetch tự động); (2) tách file theo audience ngay từ đầu thay vì để hai đáp án chung một trang; (3) gắn `document_version` thật cho mọi biểu phí và thêm trường `academic_year`/`campus` để Q6–Q7 có chiều lọc version và liên trường ngay từ ingest.
 
 ---
 
@@ -159,6 +162,6 @@ Cài embedder thật (local) từ đầu buổi để tải nền; thêm overlap
 |----------|-------------------|
 | Lựa chọn tài liệu (Document Set Quality) | 9 / 10 |
 | Thiết kế chiến lược (Strategy Design) | 13 / 15 |
-| Chất lượng truy xuất (Retrieval Quality) | 7 / 10 |
+| Chất lượng truy xuất (Retrieval Quality) | 8 / 10 |
 | Thuyết trình (Demo) | 4 / 5 |
-| **Tổng phần nhóm** | **33 / 40** |
+| **Tổng phần nhóm** | **34 / 40** |

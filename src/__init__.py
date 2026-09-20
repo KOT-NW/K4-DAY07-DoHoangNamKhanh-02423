@@ -19,6 +19,7 @@ from .embeddings import (
 )
 from .models import Document
 from .store import EmbeddingStore
+from .zen import ZenLLM
 
 __all__ = [
     "Document",
@@ -29,6 +30,7 @@ __all__ = [
     "compute_similarity",
     "EmbeddingStore",
     "KnowledgeBaseAgent",
+    "ZenLLM",
     "MockEmbedder",
     "LocalEmbedder",
     "OpenAIEmbedder",
